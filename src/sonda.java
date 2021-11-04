@@ -3,11 +3,10 @@ package src;
 public class sonda extends objeto{
     private posicao finalPos;
     private int currDirection;
-
-    private int[][] moviments = {{ 0, 1},
-                                 { 1, 0},
-                                 { 0,-1},
-                                 {-1, 0}};
+    private static int[][] moviments = {{ 0, 1},
+                                        { 1, 0},
+                                        { 0,-1},
+                                        {-1, 0}};
 
     public sonda(int x, int y, char initialDirection){
         super(x, y);
@@ -51,38 +50,38 @@ public class sonda extends objeto{
                 return '0';
         }
     }
-    public int pousar(String instructions){
+    public posicao pousar(String instructions){
         if(instructions.length() == 0){
-            return 0;
-        }else{
-            int numInstructions = instructions.length();
-            for(int index=0; index<numInstructions; index++){
-                char currInstruction = instructions.charAt(index);
-                // System.out.println("x: " + this.finalPos.getxPosition() + " y: " + this.finalPos.getyPosition() + ' ' + this.getcurrDirection());
-                switch (currInstruction){
-                    case 'L':
-                        if(this.currDirection-1 < 0){
-                            this.currDirection = 3;
-                        } else{
-                            this.currDirection = this.currDirection-1;
-                        }
-                    break;
-                    case 'R':
-                        if(this.currDirection+1 > 3){
-                            this.currDirection = 0;
-                        } else{
-                            this.currDirection = this.currDirection+1;
-                        }
-                    break;
-                    case 'M':
-                        this.finalPos.setxPosition(this.finalPos.getxPosition() + moviments[this.currDirection][0]);
-                        this.finalPos.setyPosition(this.finalPos.getyPosition() + moviments[this.currDirection][1]);
-                    break;
-                    default:
-                        System.out.println("Comando invalido");
-                }
-            }
-            return 1;
+            return this.finalPos;
         }
+        int numInstructions = instructions.length();
+
+        for(int index=0; index<numInstructions; index++){
+            char currInstruction = instructions.charAt(index);
+            
+            switch (currInstruction){
+                case 'L':
+                    if(this.currDirection-1 < 0){
+                        this.currDirection = 3;
+                    } else{
+                        this.currDirection = this.currDirection-1;
+                    }
+                break;
+                case 'R':
+                    if(this.currDirection+1 > 3){
+                        this.currDirection = 0;
+                    } else{
+                        this.currDirection = this.currDirection+1;
+                    }
+                break;
+                case 'M':
+                    this.finalPos.setxPosition(this.finalPos.getxPosition() + moviments[this.currDirection][0]);
+                    this.finalPos.setyPosition(this.finalPos.getyPosition() + moviments[this.currDirection][1]);
+                break;
+                default:
+                    System.out.println("Comando invalido");
+            }
+        }
+        return this.finalPos; 
     }
 }
