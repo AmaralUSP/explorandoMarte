@@ -1,6 +1,6 @@
 package src;
 
-public class posicao {
+public class posicao{
     private int[] currPosition = new int[2];
 
     public posicao(int x, int y){
