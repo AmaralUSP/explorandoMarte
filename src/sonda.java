@@ -8,8 +8,16 @@ public class sonda extends objeto{
                                         { 0,-1},
                                         {-1, 0}};
 
-    public sonda(int x, int y, char initialDirection){
+    public sonda(int x, int y, char initialDirection, malha m){
         super(x, y);
+        if(!m.posicaoValida(x, y)){
+            System.out.println("Posicao invalida!\n");
+            return;
+        }
+        if(this.diracaoInvalida(initialDirection)){
+            System.out.println("Direcao invalida!\n");
+            return;
+        }
         this.finalPos = new posicao(x, y);
         this.currDirection = 0;
         this.currDirection = directionToInt(initialDirection);
@@ -50,6 +58,9 @@ public class sonda extends objeto{
                 return '0';
         }
     }
+    public boolean diracaoInvalida(char direction){
+        return direction != 'N' && direction != 'W' && direction != 'E' && direction != 'S';
+    }
     public posicao pousar(String instructions){
         if(instructions.length() == 0){
             return this.finalPos;
@@ -58,7 +69,9 @@ public class sonda extends objeto{
 
         for(int index=0; index<numInstructions; index++){
             char currInstruction = instructions.charAt(index);
-            
+            // Caso ela tenha saido dos limites (a sonda se perdeu no espaco
+            //  e termina a execucao deste comando)
+            // tratar caracteres invalidos de entrada
             switch (currInstruction){
                 case 'L':
                     if(this.currDirection-1 < 0){
