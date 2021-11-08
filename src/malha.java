@@ -2,25 +2,26 @@ package src;
 import java.util.*;
 
 public class malha{
-    List<posicao> objPos=new ArrayList<posicao>();  
-    private int xSize;
-    private int ySize;
+    List<posicao> objPos=new ArrayList<posicao>();
+    private posicao tamMax;
 
     public malha(int x, int y){
-        setxSize(x);
-        setySize(y);
+        tamMax = new posicao(x,y);
     }
     public void setxSize(int x){
-        this.xSize = x;
+        this.tamMax.setxPosition(x);
     }
     public void setySize(int y){
-        this.ySize = y;
+        this.tamMax.setyPosition(y);
     }
     public int getxSize(){
-        return this.xSize;
+        return this.tamMax.getxPosition();
     }
     public int getySize(){
-        return this.ySize;
+        return this.tamMax.getyPosition();
+    }
+    public boolean posicaoValida(int x, int y){
+        return x >= 0 && x <= this.tamMax.getxPosition() && y >= 0 && y <= this.tamMax.getxPosition();
     }
     public void printObjectList(){
         for(posicao pos : this.objPos)
