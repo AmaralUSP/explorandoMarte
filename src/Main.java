@@ -1,11 +1,15 @@
 package src;
-import java.nio.file.WatchService;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
-
-import javax.swing.plaf.TextUI;
+import java.util.Random;
 
 public class Main{
-    private static Scanner sc = new Scanner(System.in);
+    private static Scanner sc;
+    private static int DIFICIL = 3;
+    private static int MEDIO = 4;
+    private static int FACIL = 5;
+
     public static Sonda novaSonda(Malha m){
         int iniPosX, iniPosY;
         char iniDirec;
@@ -16,7 +20,7 @@ public class Main{
         iniPosX = sc.nextInt();
         iniPosY = sc.nextInt();
         iniDirec = sc.next().charAt(0);  
-
+        
         try{
             s = new Sonda(iniPosX, iniPosY, iniDirec, m);
         } catch(Exception e){
@@ -28,28 +32,33 @@ public class Main{
     }
     public static void inserirObstaculo(Malha m){
         int x, y;
-        int continuar = 1;
+        int continuar, qtdObstaculos;
+        int xSize = m.getTamX();
+        int ySize = m.getTamY();
 
-        while(true){
-            System.out.println("Digite 1 para adicionar um obstaculo e 0 para nao adicionar");
-            continuar = sc.nextInt();
-
-            if(continuar == 0) break;
-            if(continuar == 1){
-                System.out.println("Informe a posicao do obstaculo!");
-                x = sc.nextInt();
-                y = sc.nextInt();
+        System.out.println("Digite 1 para adicionar um obstaculo e 0 para nao adicionar");
+        continuar = sc.nextInt();
+        
+        if(continuar == 0) return;
+        
+        if(continuar == 1){
+            qtdObstaculos = (xSize*ySize)/FACIL;
+        
+            for(int qtd=0; qtd<qtdObstaculos; qtd++){
+                x = (int)(Math.random() * xSize + 1);
+                y = (int)(Math.random() * ySize + 1);
 
                 try{
                     m.posicaoValida(x, y);
                 } catch(Exception e){
-                    System.out.println(e);
+                    continue;
                 }
 
                 Obstaculo o = new Obstaculo(x, y);
-                m.addNovoObjt(o.getPosicao());
+                m.addNovoObjt(o.getPosicao(), '*');
             }
-        }
+        } else
+            System.out.println("Opcao invalida, os obstaculos nao foram adicionados");
     }
     
     public static void construirMarte(Malha m){
@@ -73,51 +82,69 @@ public class Main{
         Malha m = new Malha(0,0);
         int continuar =1;
         String instrucoes;
-        boolean valoresInvalidos = true;
+        File file;
+        
+        if(args.length > 0){
+            try{
+                file = new File(args[0]);
+                sc = new Scanner(file);
+            }catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        else 
+            sc = new Scanner(System.in);
 
         System.out.println("********* Pouse a sonda da NASA *********\n\n");
         
-        while (valoresInvalidos) {
-            valoresInvalidos = false;
-            try{
-                construirMarte(m);
-            } catch(Exception e){
-                valoresInvalidos = true;
-                System.out.println(e);
-            }
+        try{
+            construirMarte(m);
+        } catch(Exception e){
+            System.out.println(e);
+            return;
         }
 
         try{
             inserirObstaculo(m);
-        }catch(Exception e){
-            System.out.println(e);
+        } catch(Exception e){
+            System.out.println("Alguns asteroides colidiram");
         }
+        
+        while(true){           
+            if(continuar == 0)
+                break;
 
-        while(continuar != 0){
+            System.out.println("Atualizando mapa de Marte ... ");
+            System.out.println(m.imprimirMalha());
+
             try{
                 s = novaSonda(m);
             } catch(Exception e){
                 System.out.println(e);
-                break;
+                return;
             }
             
             System.out.println("Informe o comando:");
             sc.nextLine();
-            // ler instrucoes de movimentos
             instrucoes = sc.nextLine();
-
+            
             Posicao posicaoFinal = new Posicao(0, 0);
+            char direcao = s.intParaDirecao(s.getDirecaoAtual());
+
             try{
                 posicaoFinal = s.pousar(instrucoes, m);
-                m.addNovoObjt(posicaoFinal);
+                direcao = s.intParaDirecao(s.getDirecaoAtual());
+                m.addNovoObjt(posicaoFinal, direcao);
             } catch(Exception e){
                 System.out.println(e);
             }
-
-            System.out.println("Posicao final x: " + posicaoFinal.getPosicaoX() + " y: " + posicaoFinal.getPosicaoY() + ' ' + s.intParaDirecao(s.getDirecaoAtual()));
-            System.out.println("Digite 1 para adicionar uma nova sonda e 0 para finalizar");
+            
+            System.out.println("Posicao final x: " + posicaoFinal.getPosicaoX() + " y: " + posicaoFinal.getPosicaoY() + ' ' + direcao);
+            System.out.println("Digite 1 para continuar ou 0 para finalizar");
             continuar = sc.nextInt();
         }
+        System.out.println("\n************Escaneamento finalizado!************\n");
+        System.out.println(m.imprimirMalha());
         sc.close();
     }
 }
