@@ -5,7 +5,14 @@
 O planeta Marte eh um ambiente ainda pouco explorado, o usuario deve dar um comando a nave para que ela possa percorrer e explorar o planeta. 
 
 2. ### Especificacoes
-O codigo foi desenvolvido na versao openjdk "11.0.11"
+O codigo foi desenvolvido na versao openjdk "11.0.11" no ambiente do VisualStudio Code.  
+A aplicacao aceita receber entradas via teclado ou atraves de arquivos de texto.
+A execucao via terminal nao necessita de nenhum tipo de alteracao.
+Para arquivos de texto:
+    
+    1. Adicione o arquivo de texto no diretorio inputFiles.
+    2. No diretorio .vscode, abra o arquivo launch.json e altere o campo args com o caminho e o nome do arquivo que sera lido.
+    3. Salve as alteracoes e execute o programa.  
 
 3. ### Definicoes
 - Direcoes: As direcoes adotadas na aplicacao sao definidas conforme a rosa dos ventos em ingles, ou seja, Norte = N, Leste = W, Oeste = E e, por fim, Sul = S. Alem disso, o canto inferior esquerdo da malha eh a posicao (0,0) e a superior a esquer eh (x,y), onde x e y sarao os limites do campo definidos pelo usuario.

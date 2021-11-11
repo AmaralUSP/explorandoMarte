@@ -10,6 +10,7 @@ public class Sonda extends Objeto{
 
     public Sonda(){
         super(0, 0);
+        this.direcaoAtual = 0;
     }
 
     public Sonda(int x, int y, char direcaoInicial, Malha m){
@@ -18,11 +19,10 @@ public class Sonda extends Objeto{
             m.posicaoValida(x, y);
             this.diracaoInvalida(direcaoInicial);
         } catch (Exception e){
-            return;
+            throw e;
         }
 
         this.posFinal = new Posicao(x, y);
-        this.direcaoAtual = 0;
         this.direcaoAtual = diracaoParaInt(direcaoInicial);
     }
     public Posicao getPosFinal(){
@@ -41,9 +41,10 @@ public class Sonda extends Objeto{
                 return 2;
             case 'W':
                 return 3;
+            case '*':
+                return 4;
             default:
-                System.out.println("Direcao invalida");
-                return 0;
+                throw new IllegalArgumentException("Direcao invalida!");
         }
     }
     public char intParaDirecao(int direcao){
@@ -56,13 +57,14 @@ public class Sonda extends Objeto{
                 return 'S';
             case 3:
                 return 'W';
+            case 4:
+                return '*';
             default:
-                System.out.println("Direcao invalida");
-                return '0';
+                throw new IllegalArgumentException("Direcao invalida!");
         }
     }
     public void diracaoInvalida(char direcao){
-        if(direcao != 'N' && direcao != 'W' && direcao != 'E' && direcao != 'S')
+        if(direcao != 'N' && direcao != 'W' && direcao != 'E' && direcao != 'S' && direcao != '*')
             throw new IllegalArgumentException("Direcao invalida!");
     
     }
@@ -77,7 +79,7 @@ public class Sonda extends Objeto{
             try{
                 m.verificarPosicaoValida(this.posFinal);
             } catch(Exception e){
-                System.out.println(e);
+                // System.out.println(e);
                 return this.posFinal;
             }
             switch (currInstruction){

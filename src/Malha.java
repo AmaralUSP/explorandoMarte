@@ -1,8 +1,10 @@
 package src;
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Collectors;
 
 public class Malha{
-    List<Posicao> objPos=new ArrayList<Posicao>();
+    List<Sonda> objPos=new ArrayList<Sonda>();
     private Posicao tamMax;
 
     public Malha(int x, int y){
@@ -25,23 +27,55 @@ public class Malha{
             return;
         throw new IllegalArgumentException("Valores fora dos limites da malha!");
     }
-    public void imprimirListaDeObjetos(){
-        for(Posicao pos : this.objPos)
-            System.out.println("x: " + pos.getPosicaoX() + " y: " + pos.getPosicaoY() + '\n');
+    public String imprimirMalha(){
+        int x = this.getTamX();
+        int y = this.getTamY();
+        String print = new String();
+        StringBuilder[] newString = new StringBuilder[y+2];
+        
+        newString[y+1] = new StringBuilder();
+        newString[y+1].append("^y\n");
+
+        for(int index=y; index>0; index--){
+            newString[index] = new StringBuilder();
+            newString[index].append("|").append(IntStream.range(0, x).mapToObj(i -> " 0").collect(Collectors.joining(""))).append("\n");
+        }
+        
+        newString[0] = new StringBuilder();
+        newString[0].append(" ").append(IntStream.range(0, x).mapToObj(i -> " ─").collect(Collectors.joining(""))).append(" >x");
+        
+        for(Sonda pos : this.objPos){
+            int xPos = pos.getPosicao().getPosicaoX();
+            int yPos = pos.getPosicao().getPosicaoY();
+            try{
+                this.posicaoValida(xPos, yPos);
+            } catch(Exception e){
+                continue;
+            }
+            newString[yPos].setCharAt(xPos*2, pos.intParaDirecao(pos.getDirecaoAtual()));
+        }
+
+        for(int index=y+1; index>=0; index--){
+            print = print + newString[index].toString();
+        }
+
+        return print;
     }
     public void verificarPosicaoValida(Posicao newObject){
-        for(Posicao pos : this.objPos){
-            if(pos.getPosicaoX()==newObject.getPosicaoX() && pos.getPosicaoY()==newObject.getPosicaoY())
-                throw new IllegalArgumentException("A sonda colidiu na posicao " + newObject.getPosicaoX() + ' ' + newObject.getPosicaoX());
+        for(Sonda pos : this.objPos){
+            if(pos.getPosicao().getPosicaoX()==newObject.getPosicaoX() && pos.getPosicao().getPosicaoY()==newObject.getPosicaoY())
+                throw new IllegalArgumentException("A sonda colidiu na posicao " + newObject.getPosicaoX() + ' ' + newObject.getPosicaoY());
         }
     }
-    public void addNovoObjt(Posicao novoObjeto){
+    public void addNovoObjt(Posicao novoObjeto, char direcao){
+        int x = novoObjeto.getPosicaoX();
+        int y = novoObjeto.getPosicaoY();
         try{
             this.verificarPosicaoValida(novoObjeto);
         }catch(Exception e){
             throw e;
         }
 
-        this.objPos.add(novoObjeto);
+        this.objPos.add(new Sonda(x, y, direcao, this));
     }
 }
