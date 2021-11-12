@@ -1,8 +1,9 @@
 package src;
+
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
-import java.util.Random;
 
 public class Main{
     private static Scanner sc;
@@ -12,20 +13,28 @@ public class Main{
 
     public static Sonda novaSonda(Malha m){
         int iniPosX, iniPosY;
-        char iniDirec;
+        char direcIni;
         Sonda s = new Sonda();
 
-        System.out.println("Informe a posicao inicial da sonda e a sua direcao:");
-
-        iniPosX = sc.nextInt();
-        iniPosY = sc.nextInt();
-        iniDirec = sc.next().charAt(0);  
-        
         try{
-            s = new Sonda(iniPosX, iniPosY, iniDirec, m);
+            System.out.println("Informe a posicao inicial da sonda e a sua direcao:");
+            
+            System.out.println("Informe a coordenada x!");
+            iniPosX = sc.nextInt();
+
+            System.out.println("Informe a coordenada y!");
+            iniPosY = sc.nextInt();
+            
+            System.out.println("Informe a direcao");
+            direcIni = sc.next().charAt(0);  
+        } catch (Exception e){
+            throw new InputMismatchException("Informacoes invalida, missao abortada");
+        }
+
+        try{
+            s = new Sonda(iniPosX, iniPosY, direcIni, m);
         } catch(Exception e){
-            System.out.println(e);
-            return new Sonda();
+            throw e;
         }
 
         return s;
@@ -33,20 +42,24 @@ public class Main{
     public static void inserirObstaculo(Malha m){
         int x, y;
         int continuar, qtdObstaculos;
-        int xSize = m.getTamX();
-        int ySize = m.getTamY();
+        int tamX = m.getTamX();
+        int tamY = m.getTamY();
 
-        System.out.println("Digite 1 para adicionar um obstaculo e 0 para nao adicionar");
-        continuar = sc.nextInt();
-        
+        try{
+            System.out.println("Digite 1 para adicionar obstaculos e 0 para nao adicionar");
+            continuar = sc.nextInt();
+        } catch(Exception e){
+            throw new InputMismatchException("Opcao invalida, missao abortada");
+        }
+
         if(continuar == 0) return;
         
         if(continuar == 1){
-            qtdObstaculos = (xSize*ySize)/FACIL;
+            qtdObstaculos = (tamX*tamY)/FACIL;
         
             for(int qtd=0; qtd<qtdObstaculos; qtd++){
-                x = (int)(Math.random() * xSize + 1);
-                y = (int)(Math.random() * ySize + 1);
+                x = (int)(Math.random() * tamX + 1);
+                y = (int)(Math.random() * tamY + 1);
 
                 try{
                     m.posicaoValida(x, y);
@@ -58,29 +71,32 @@ public class Main{
                 m.addNovoObjt(o.getPosicao(), '*');
             }
         } else
-            System.out.println("Opcao invalida, os obstaculos nao foram adicionados");
-    }
-    
+            throw new InputMismatchException("Opcao invalida, missao abortada");
+    }   
     public static void construirMarte(Malha m){
         int tamX, tamY;
         
-        System.out.println("Informe o tamanho da malha (x, y):");
-        
-        // Ler tamanho da malha x e y
-        tamX = sc.nextInt();
-        tamY = sc.nextInt();
+        System.out.println("Informe o tamanho da malha");
 
+        try{
+            System.out.println("Informe o tamanho x");
+            tamX = sc.nextInt();
+            System.out.println("Informe o tamanho y");
+            tamY = sc.nextInt();
+        }catch (Exception e){
+            throw new InputMismatchException("Valores invalidos, missao abortada");
+        }
+        
         if(tamX < 1 || tamY < 1)
             throw new IllegalArgumentException("O tamanho da malha deve ser no minimo 1x1!");
         
         m.setTamX(tamX);
         m.setTamY(tamY);
-    }
-        
+    }       
     public static void main( String[] args ) {
         Sonda s = new Sonda();
         Malha m = new Malha(0,0);
-        int continuar =1;
+        int continuar = 1;
         String instrucoes;
         File file;
         
@@ -106,6 +122,9 @@ public class Main{
 
         try{
             inserirObstaculo(m);
+        } catch(InputMismatchException ME){
+            System.out.println(ME);
+            return;
         } catch(Exception e){
             System.out.println("Alguns asteroides colidiram");
         }
@@ -115,13 +134,14 @@ public class Main{
                 break;
 
             System.out.println("Atualizando mapa de Marte ... ");
-            System.out.println(m.imprimirMalha());
+            System.out.println(m);
 
             try{
                 s = novaSonda(m);
             } catch(Exception e){
                 System.out.println(e);
-                return;
+                System.out.println("Abortar missao!");
+                break;    
             }
             
             System.out.println("Informe o comando:");
@@ -144,7 +164,7 @@ public class Main{
             continuar = sc.nextInt();
         }
         System.out.println("\n************Escaneamento finalizado!************\n");
-        System.out.println(m.imprimirMalha());
+        System.out.println(m);
         sc.close();
     }
 }

@@ -1,5 +1,7 @@
 package src;
 
+import java.util.InputMismatchException;
+
 public class Sonda extends Objeto{
     private Posicao posFinal;
     private int direcaoAtual;
@@ -19,7 +21,7 @@ public class Sonda extends Objeto{
             m.posicaoValida(x, y);
             this.diracaoInvalida(direcaoInicial);
         } catch (Exception e){
-            throw e;
+            throw new InputMismatchException("Informacoes invalidas!");
         }
 
         this.posFinal = new Posicao(x, y);
@@ -74,15 +76,14 @@ public class Sonda extends Objeto{
         }
         int numInstrucoes = instrucoes.length();
 
-        for(int index=0; index<numInstrucoes; index++){
-            char currInstruction = instrucoes.charAt(index);
+        for(int indice = 0; indice < numInstrucoes; indice++){
+            char instrucaoAtual = instrucoes.charAt(indice);
             try{
                 m.verificarPosicaoValida(this.posFinal);
             } catch(Exception e){
-                // System.out.println(e);
                 return this.posFinal;
             }
-            switch (currInstruction){
+            switch (instrucaoAtual){
                 case 'L':
                     if(this.direcaoAtual-1 < 0){
                         this.direcaoAtual = 3;

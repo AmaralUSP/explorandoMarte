@@ -27,7 +27,8 @@ public class Malha{
             return;
         throw new IllegalArgumentException("Valores fora dos limites da malha!");
     }
-    public String imprimirMalha(){
+    @Override
+    public String toString(){
         int x = this.getTamX();
         int y = this.getTamY();
         String print = new String();
@@ -70,6 +71,7 @@ public class Malha{
     public void addNovoObjt(Posicao novoObjeto, char direcao){
         int x = novoObjeto.getPosicaoX();
         int y = novoObjeto.getPosicaoY();
+        
         try{
             this.verificarPosicaoValida(novoObjeto);
         }catch(Exception e){
