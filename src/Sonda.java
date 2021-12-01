@@ -3,7 +3,7 @@ package src;
 import java.util.InputMismatchException;
 
 public class Sonda extends Objeto{
-    private Posicao posFinal;
+    private Posicao posicaoFinal;
     private int direcaoAtual;
     private static int[][] movimentos = {{ 0, 1},
                                         { 1, 0},
@@ -24,11 +24,11 @@ public class Sonda extends Objeto{
             throw new InputMismatchException("Informacoes invalidas!");
         }
 
-        this.posFinal = new Posicao(x, y);
+        this.posicaoFinal = new Posicao(x, y);
         this.direcaoAtual = diracaoParaInt(direcaoInicial);
     }
     public Posicao getPosFinal(){
-        return this.posFinal;
+        return this.posicaoFinal;
     }
     public int getDirecaoAtual(){
         return this.direcaoAtual;
@@ -72,16 +72,16 @@ public class Sonda extends Objeto{
     }
     public Posicao pousar(String instrucoes, Malha m){
         if(instrucoes.length() == 0){
-            return this.posFinal;
+            return this.posicaoFinal;
         }
         int numInstrucoes = instrucoes.length();
 
         for(int indice = 0; indice < numInstrucoes; indice++){
             char instrucaoAtual = instrucoes.charAt(indice);
             try{
-                m.verificarPosicaoValida(this.posFinal);
+                m.verificarPosicaoValida(this.posicaoFinal);
             } catch(Exception e){
-                return this.posFinal;
+                return this.posicaoFinal;
             }
             switch (instrucaoAtual){
                 case 'L':
@@ -99,12 +99,12 @@ public class Sonda extends Objeto{
                     }
                 break;
                 case 'M':
-                    this.posFinal.setPosicaoX(this.posFinal.getPosicaoX() + movimentos[this.direcaoAtual][0]);
-                    this.posFinal.setPosicaoY(this.posFinal.getPosicaoY() + movimentos[this.direcaoAtual][1]);
-                    if(this.posFinal.getPosicaoX() < 0 || this.posFinal.getPosicaoX() > m.getTamX()
-                    || this.posFinal.getPosicaoY() < 0 || this.posFinal.getPosicaoY() > m.getTamY()){
+                    this.posicaoFinal.setPosicaoX(this.posicaoFinal.getPosicaoX() + movimentos[this.direcaoAtual][0]);
+                    this.posicaoFinal.setPosicaoY(this.posicaoFinal.getPosicaoY() + movimentos[this.direcaoAtual][1]);
+                    if(this.posicaoFinal.getPosicaoX() < 0 || this.posicaoFinal.getPosicaoX() > m.getTamX()
+                    || this.posicaoFinal.getPosicaoY() < 0 || this.posicaoFinal.getPosicaoY() > m.getTamY()){
                         System.out.println("A sonda saiu do espaco observavel!");
-                        return this.posFinal;
+                        return this.posicaoFinal;
                     }
 
                 break;
@@ -112,6 +112,6 @@ public class Sonda extends Objeto{
                     System.out.println("Comando invalido, seguindo para proxima instrucao");
             }
         }
-        return this.posFinal; 
+        return this.posicaoFinal; 
     }
 }

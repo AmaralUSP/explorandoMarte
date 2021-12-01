@@ -1,22 +1,23 @@
 package src;
 
 public class Posicao{
-    private int[] posAtual = new int[2];
+    private int posicaoX;
+    private int posicaoY;
 
     public Posicao(int x, int y){
-        this.posAtual[0] = x;
-        this.posAtual[1] = y;
+        this.posicaoX = x;
+        this.posicaoY = y;
     }
     public void setPosicaoX(int x){
-        this.posAtual[0] = x;
+        this.posicaoX = x;
     }
     public void setPosicaoY(int y){
-        this.posAtual[1] = y;
+        this.posicaoY = y;
     }
     public int getPosicaoX(){
-        return this.posAtual[0];
+        return this.posicaoX;
     }
     public int getPosicaoY(){
-        return this.posAtual[1];
+        return this.posicaoY;
     }
 }
