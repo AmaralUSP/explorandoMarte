@@ -32,6 +32,13 @@ public class Main{
         }
 
         try{
+            Posicao posicaoInicial = new Posicao(posicaoInicialX, posicaoInicialY);
+            m.verificarPosicaoValida(posicaoInicial);
+        }
+        catch(Exception e){
+            throw new IllegalArgumentException("A posicao inicial selecionada ja esta ocupada."); 
+        }
+        try{
             s = new Sonda(posicaoInicialX, posicaoInicialY, direcaoInicial, m);
         } catch(Exception e){
             throw e;
@@ -129,10 +136,7 @@ public class Main{
             System.out.println("Alguns asteroides colidiram");
         }
         
-        while(true){           
-            if(continuar == 0)
-                break;
-
+        while(continuar != 0){    
             System.out.println("Atualizando mapa de Marte ... ");
             System.out.println(m);
 
@@ -140,8 +144,8 @@ public class Main{
                 s = novaSonda(m);
             } catch(Exception e){
                 System.out.println(e);
-                System.out.println("Abortar missao!");
-                break;    
+                System.out.println("Insira as informacoes novamente");
+                continue;    
             }
             
             System.out.println("Informe o comando:");
@@ -151,13 +155,11 @@ public class Main{
             Posicao posicaoFinal = new Posicao(0, 0);
             char direcao = s.intParaDirecao(s.getDirecaoAtual());
 
-            try{
-                posicaoFinal = s.pousar(instrucoes, m);
-                direcao = s.intParaDirecao(s.getDirecaoAtual());
-                m.addNovoObjt(posicaoFinal, direcao);
-            } catch(Exception e){
-                System.out.println(e);
-            }
+            s.pousar(instrucoes, m);
+            direcao = s.intParaDirecao(s.getDirecaoAtual());
+            posicaoFinal = s.getPosFinal();
+
+            m.addNovoObjt(posicaoFinal, direcao);            
             
             System.out.println("Posicao final x: " + posicaoFinal.getPosicaoX() + " y: " + posicaoFinal.getPosicaoY() + ' ' + direcao);
             System.out.println("Digite 1 para continuar ou 0 para finalizar");
