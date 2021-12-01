@@ -75,14 +75,11 @@ public class Sonda extends Objeto{
             return this.posicaoFinal;
         }
         int numInstrucoes = instrucoes.length();
+        char instrucaoAtual;
 
         for(int indice = 0; indice < numInstrucoes; indice++){
-            char instrucaoAtual = instrucoes.charAt(indice);
-            try{
-                m.verificarPosicaoValida(this.posicaoFinal);
-            } catch(Exception e){
-                return this.posicaoFinal;
-            }
+            instrucaoAtual = instrucoes.charAt(indice);
+
             switch (instrucaoAtual){
                 case 'L':
                     if(this.direcaoAtual-1 < 0){
@@ -104,6 +101,14 @@ public class Sonda extends Objeto{
                     if(this.posicaoFinal.getPosicaoX() < 0 || this.posicaoFinal.getPosicaoX() > m.getTamX()
                     || this.posicaoFinal.getPosicaoY() < 0 || this.posicaoFinal.getPosicaoY() > m.getTamY()){
                         System.out.println("A sonda saiu do espaco observavel!");
+                        return this.posicaoFinal;
+                    }
+                    try{
+                        m.verificarPosicaoValida(this.posicaoFinal);
+                    } catch(Exception e){
+                        this.posicaoFinal.setPosicaoX(this.posicaoFinal.getPosicaoX() - movimentos[this.direcaoAtual][0]);
+                        this.posicaoFinal.setPosicaoY(this.posicaoFinal.getPosicaoY() - movimentos[this.direcaoAtual][1]);
+                        System.out.println("As instrucoes fornecidas causariam uma colisao, por este motivo a sonda pousou antes do acidente!");
                         return this.posicaoFinal;
                     }
 
